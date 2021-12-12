@@ -1,6 +1,7 @@
 ######## Tensorflow Imaage Classifier #########
 #
-# Author: Erik Handeland Date: 12/12/2021 Description: This program uses a
+# Author: Erik Handeland Date: 12/12/2021 
+# Description: This program uses a
 # TensorFlow Lite object detection model to perform object detection on an
 # image. It creates a json file containing a list of detected objects and
 # the count for each object. It also save a copy of the image with draws
@@ -8,7 +9,7 @@
 #
 # This code is based off the TensorFlow Lite image classification example at:
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/examples/python/label_image.py
-# Add the following github repo by Evan Juras:
+# And the following github repo by Evan Juras:
 # https://github.com/EdjeElectronics/TensorFlow-Lite-Object-Detection-on-Android-and-Raspberry-Pi
 #
 # Removed unnecessary features and customised data formatting for exporting
