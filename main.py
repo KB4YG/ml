@@ -7,7 +7,7 @@ from img_classifier import imgClassify
 import argparse
 
 def capturePhoto():
-    return "test_img/parking-lot-3.jpeg" #TODO TESTING
+    return "test_img/parking-lot-3.jpg" #TODO TESTING
     videoCaptureObject = cv2.VideoCapture(0)
     result = True
     while (result):
@@ -51,7 +51,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--location',
                     help='Name of park, must match database',
                     type=str,
-                    default="Fitton Green",
                     required=True)
 parser.add_argument('--model',
                     help='Path to model folder',
@@ -60,8 +59,7 @@ parser.add_argument('--model',
 parser.add_argument('--url',
                     help='Minimum confidence threshold for displaying detected objects',
                     default="https://cfb32cwake.execute-api.us-west-2.amazonaws.com/default/",
-                    type=str,
-                    required=True)
+                    type=str)
 
 args = parser.parse_args()
 
