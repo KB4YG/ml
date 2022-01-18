@@ -124,7 +124,7 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
     if DEBUG:
         print(count)
 
-        IMG_PATH = os.path.join(CWD_PATH+"/benchmark/", IM_NAME[:-4]+"_box.png")
+        IMG_PATH = os.path.join(CWD_PATH+"/benchmark/"+MODEL_NAME, IM_NAME[:-4]+"_box.png")
         cv2.imwrite(IMG_PATH, image)
     return objects, count
 
