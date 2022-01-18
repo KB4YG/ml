@@ -21,7 +21,6 @@ import cv2
 import numpy as np
 import importlib.util
 from datetime import datetime
-import json
 
 
 def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
@@ -124,8 +123,8 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
     count = dict(collections.Counter(k[0] for k in objects))
     if DEBUG:
         print(count)
-        date = now.strftime("%m-%d-%Y %H:%M")
-        IMG_PATH = os.path.join(CWD_PATH, "img", date + ".png")
+
+        IMG_PATH = os.path.join(CWD_PATH+"/benchmark/", IM_NAME[:-4]+"_box.png")
         cv2.imwrite(IMG_PATH, image)
     return objects, count
 
