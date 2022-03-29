@@ -16,6 +16,7 @@
 
 # Import packages
 import os
+from os.path import exists
 import cv2
 import numpy as np
 import importlib.util
@@ -23,6 +24,8 @@ import importlib.util
 
 def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
                 GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", DEBUG=False):
+    objects = []
+
     # Import TensorFlow libraries
     # If tflite_runtime is installed, import interpreter from tflite_runtime, else import from regular tensorflow
     # If using Coral Edge TPU, import the load_delegate library
@@ -37,9 +40,27 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
 
     # Path to .tflite file, which contains the model that is used for object detection
     PATH_TO_CKPT = os.path.join(CWD_PATH, MODEL_NAME, GRAPH_NAME)
+    if not exists(PATH_TO_CKPT):
+        print("detect.tflite not found! at path: " + PATH_TO_CKPT)
+        return {
+            "error": "Invalid model path",
+            "vehicles": -1,
+            "pedestrians": -1,
+            "confidence-threshold": min_conf_threshold,
+            "objects": objects,
+        }
 
     # Path to label map file
     PATH_TO_LABELS = os.path.join(CWD_PATH, MODEL_NAME, LABELMAP_NAME)
+    if not exists(PATH_TO_LABELS):
+        print("labelmap.txt not found! at path: " + PATH_TO_LABELS)
+        return {
+            "error": "Invalid label map path",
+            "vehicles": -1,
+            "pedestrians": -1,
+            "confidence-threshold": min_conf_threshold,
+            "objects": objects,
+        }
 
     # Load the label map
     with open(PATH_TO_LABELS, 'r') as f:
@@ -68,6 +89,15 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
 
     # Load image and resize to expected shape [1xHxWx3]
     image = cv2.imread(IM_NAME)
+    if image is None:
+        print("Image not found, check path")
+        return {
+            "error": "Image not found, check path",
+            "vehicles": -1,
+            "pedestrians": -1,
+            "confidence-threshold": min_conf_threshold,
+            "objects": objects,
+        }
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     imH, imW, _ = image.shape
     image_resized = cv2.resize(image_rgb, (width, height))
@@ -82,17 +112,14 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
     interpreter.invoke()
 
     # Retrieve detection results
-    objects = []
     boxes = interpreter.get_tensor(output_details[0]['index'])[0]  # Bounding box coordinates of detected objects
     classes = interpreter.get_tensor(output_details[1]['index'])[0]  # Class index of detected objects
     scores = interpreter.get_tensor(output_details[2]['index'])[0]  # Confidence of detected objects
-    num = 0  # Total number of detected objects
 
     # Loop over all detections and draw detection box if confidence is above minimum threshold
     for i in range(len(scores)):
 
         if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
-            num += 1
             # Get bounding box coordinates and draw box Interpreter can
             # return coordinates that are outside of image dimensions,
             # need to force them to be within image using max() and min()
@@ -138,21 +165,20 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
         elif obj["name"] == "person":
             people += 1
 
-    result = {
-        "vehicles": cars,
-        "pedestrians": people,
-        "confidence-threshold": min_conf_threshold,
-        "objects": objects,
-    }
-
     if DEBUG:
         print("cars: ", cars)
         print("people: ", people)
 
         IMG_PATH = os.path.join(CWD_PATH + "/benchmark/" + MODEL_NAME, IM_NAME[:-4] + "_box.png")
         cv2.imwrite(IMG_PATH, image)
-    return result
 
+    return {
+        "error": "",
+        "vehicles": cars,
+        "pedestrians": people,
+        "confidence-threshold": min_conf_threshold,
+        "objects": objects,
+    }
 
 # Sample function for detecting if object is in a certain area, useful if some parking lots have handicapped or
 # oversize parking spaces
