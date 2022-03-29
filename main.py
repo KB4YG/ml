@@ -1,5 +1,5 @@
 # Just a wrapper to call img_classifier from the command line
-# Run: python main.py --location "Fitton Green" --image "image.jpg"
+# Run: python main.py --image "image.jpg"
 
 from img_classifier import imgClassify
 import argparse

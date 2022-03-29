@@ -137,8 +137,8 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
     result = {
         "vehicles": cars,
         "pedestrians": people,
-        "objects": objects,
         "confidence-threshold": min_conf_threshold,
+        "objects": objects,
     }
 
     if DEBUG:
