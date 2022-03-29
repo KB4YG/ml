@@ -15,12 +15,10 @@
 # to external services
 
 # Import packages
-import collections
 import os
 import cv2
 import numpy as np
 import importlib.util
-from datetime import datetime
 
 
 def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
@@ -103,7 +101,13 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
             ymax = int(min(imH, (boxes[i][2] * imH)))
             xmax = int(min(imW, (boxes[i][3] * imW)))
 
-            cv2.rectangle(image, (xmin, ymin), (xmax, ymax), (10, 255, 0), 2)
+            # Corners of the bounding box
+            tr = (xmax, ymax)  # Top right
+            bl = (xmin, ymin)  # Bottom left
+            br = (xmax, ymin)
+            tl = (xmin, ymax)
+
+            cv2.rectangle(image, bl, tr, (10, 255, 0), 2)
 
             # Draw label
             object_name = labels[int(classes[i])]  # Look up object name from "labels" array using class index
@@ -121,7 +125,7 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
             obj = {
                 "name": object_name,
                 "confidence": scores[i],
-                "coord": {"p1": {"x": xmin, "y": ymin}, "p2": {"x": xmax, "y": ymax}}
+                "coord": {"top-left": tl, "top-right": tr, "bottom-right": br, "bottom-left": bl}
             }
             objects.append(obj)
 
@@ -148,3 +152,15 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
         IMG_PATH = os.path.join(CWD_PATH + "/benchmark/" + MODEL_NAME, IM_NAME[:-4] + "_box.png")
         cv2.imwrite(IMG_PATH, image)
     return result
+
+
+# Sample function for detecting if object is in a certain area, useful if some parking lots have handicapped or
+# oversize parking spaces
+# if inArea([tr, tl, br, bl], (100, 400), (800, 600)):
+#       print("Object detected in area")
+def inArea(points, box_start, box_end):
+    for point in points:
+        if (box_start[0] < point[0] < box_end[0] and
+                box_start[1] < point[1] < box_end[1]):
+            return True
+    return False
