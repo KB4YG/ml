@@ -15,18 +15,14 @@
 # to external services
 
 # Import packages
-import collections
 import os
 import cv2
 import numpy as np
 import importlib.util
-from datetime import datetime
 
 
 def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
-                GRAPH_NAME = "detect.tflite", LABELMAP_NAME = "labelmap.txt", DEBUG=False):
-    now = datetime.now()
-
+                GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", DEBUG=False):
     # Import TensorFlow libraries
     # If tflite_runtime is installed, import interpreter from tflite_runtime, else import from regular tensorflow
     # If using Coral Edge TPU, import the load_delegate library
@@ -94,6 +90,7 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
 
     # Loop over all detections and draw detection box if confidence is above minimum threshold
     for i in range(len(scores)):
+
         if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
             num += 1
             # Get bounding box coordinates and draw box Interpreter can
@@ -104,27 +101,66 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
             ymax = int(min(imH, (boxes[i][2] * imH)))
             xmax = int(min(imW, (boxes[i][3] * imW)))
 
-            cv2.rectangle(image, (xmin, ymin), (xmax, ymax), (10, 255, 0), 2)
+            # Corners of the bounding box
+            tr = (xmax, ymax)  # Top right
+            bl = (xmin, ymin)  # Bottom left
+            br = (xmax, ymin)
+            tl = (xmin, ymax)
+
+            cv2.rectangle(image, bl, tr, (10, 255, 0), 2)
 
             # Draw label
             object_name = labels[int(classes[i])]  # Look up object name from "labels" array using class index
             object_score = int(scores[i] * 100)
             label = '%s: %d%%' % (object_name, object_score)  # Example: 'person: 72%'
-            labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX,0.7, 2)  # Get font size
+            labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)  # Get font size
             label_ymin = max(ymin, labelSize[1] + 10)  # Make sure not to draw label too close to top of window
             cv2.rectangle(image, (xmin, label_ymin - labelSize[1] - 10),
                           (xmin + labelSize[0], label_ymin + baseLine - 10),
-                          (255, 255, 255),cv2.FILLED)  # Draw white box to put label text in
+                          (255, 255, 255), cv2.FILLED)  # Draw white box to put label text in
             cv2.putText(image, label, (xmin, label_ymin - 7),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0),2)  # Draw label text
-            objects.append((object_name, object_score))
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw label text
 
-    # Save image or display image viewer for img dir
-    count = dict(collections.Counter(k[0] for k in objects))
+            # Create data object and append to list of detected objects
+            obj = {
+                "name": object_name,
+                "confidence": scores[i],
+                "coord": {"top-left": tl, "top-right": tr, "bottom-right": br, "bottom-left": bl}
+            }
+            objects.append(obj)
+
+    # count vehicles and pedestrians
+    cars = 0
+    people = 0
+    for obj in objects:
+        if obj["name"] == "car" or obj["name"] == "truck":
+            cars += 1
+        elif obj["name"] == "person":
+            people += 1
+
+    result = {
+        "vehicles": cars,
+        "pedestrians": people,
+        "confidence-threshold": min_conf_threshold,
+        "objects": objects,
+    }
+
     if DEBUG:
-        print(count)
+        print("cars: ", cars)
+        print("people: ", people)
 
-        IMG_PATH = os.path.join(CWD_PATH+"/benchmark/"+MODEL_NAME, IM_NAME[:-4]+"_box.png")
+        IMG_PATH = os.path.join(CWD_PATH + "/benchmark/" + MODEL_NAME, IM_NAME[:-4] + "_box.png")
         cv2.imwrite(IMG_PATH, image)
-    return objects, count
+    return result
 
+
+# Sample function for detecting if object is in a certain area, useful if some parking lots have handicapped or
+# oversize parking spaces
+# if inArea([tr, tl, br, bl], (100, 400), (800, 600)):
+#       print("Object detected in area")
+def inArea(points, box_start, box_end):
+    for point in points:
+        if (box_start[0] < point[0] < box_end[0] and
+                box_start[1] < point[1] < box_end[1]):
+            return True
+    return False
