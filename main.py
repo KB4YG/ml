@@ -1,75 +1,31 @@
-import datetime
+# Just a wrapper to call img_classifier from the command line
+# Run: python main.py --location "Fitton Green" --image "image.jpg"
 
-import cv2
-import requests
-import os
 from img_classifier import imgClassify
 import argparse
 
-def capturePhoto():
-    return "test_img/parking-lot-3.jpg" #TODO TESTING
-    videoCaptureObject = cv2.VideoCapture(0)
-    result = True
-    while (result):
-        ret, frame = videoCaptureObject.read()
-        ts = datetime.datetime.now()
-        img_path = ts.strftime("%Y/%m/%d, %H:%M:%S")
-        cv2.imwrite(img_path, frame)
-        result = False
-    videoCaptureObject.release()
-    cv2.destroyAllWindows()
-    return img_path
-
-
-def deleteImage(img_path):
-    try:
-        os.remove(img_path)
-    except:
-        pass
-
-
-def putDatabase(count):
-    vehicle_count = -1
-    if 'car' in count:
-        vehicle_count = count['car']
-
-    r = requests.put(API_URL, data={'ParkingLocation': LOCATION, 'OpenSpaces': vehicle_count})
-    if r.status_code == 200:
-        return True
-    print("HTTP ERROR Status code:", r.status_code)
-    return False
-
 
 def run():
-    img_path = capturePhoto()
-    _, count = imgClassify(MDL_PATH, img_path)
-    putDatabase(count)
-    # deleteImage(img_path) #TODO TESTING
+    result = imgClassify(MDL_PATH, IMG_PATH)
+    print("Number of vehicles: ", result["vehicles"])
+    print("Number of pedestrians: ", result["pedestrians"])
+    print("Number of objects: ", result["objects"])
+
 
 # get commandline arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--location',
-                    help='Name of park, must match database',
+parser.add_argument('--image',
+                    help='image to classify',
                     type=str,
-                    required=True)
+                    default='test_img/parking-lot-8.jpg')
 parser.add_argument('--model',
                     help='Path to model folder',
                     type=str,
                     default='models/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29')
-parser.add_argument('--url',
-                    help='Minimum confidence threshold for displaying detected objects',
-                    default="https://cfb32cwake.execute-api.us-west-2.amazonaws.com/default/",
-                    type=str)
 
 args = parser.parse_args()
-
 MDL_PATH = args.model
-LOCATION = args.location
-API_URL = args.url
-
-# Other arguments?
-# api authentication key
-# Debug mode or flag to save images for future algorithm
+IMG_PATH = args.image
 
 if __name__ == '__main__':
     run()
