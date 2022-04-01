@@ -1,0 +1,27 @@
+<annotation>
+	<folder></folder>
+	<filename>carsgraz_281_png.rf.4b1ce598c999a9cb5bf521f452df19ca.jpg</filename>
+	<path>carsgraz_281_png.rf.4b1ce598c999a9cb5bf521f452df19ca.jpg</path>
+	<source>
+		<database>roboflow.ai</database>
+	</source>
+	<size>
+		<width>416</width>
+		<height>416</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>car</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>119</xmin>
+			<xmax>417</xmax>
+			<ymin>108</ymin>
+			<ymax>250</ymax>
+		</bndbox>
+	</object>
+</annotation>

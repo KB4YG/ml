@@ -4,8 +4,13 @@
 # Description: Benchmarks the performance of the Tensorflow models
 #
 # Import packages
-import os
 from os.path import isfile, join
+
+from tf_evaluation import evaluate_tflite
+
+model_path = '../models/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29'
+dataset_path = 'Prediction_set/'
+# evaluate_tflite(model_path + '/detect.tflite', "/home/erik/PycharmProjects/ml/test_img") .. kinda works, basiclly just calls imag_classifier migh tneed to use in area for testing?
 
 import numpy as np
 import os
@@ -18,43 +23,39 @@ from tflite_model_maker import object_detector
 from tflite_support import metadata
 
 import tensorflow as tf
+
 assert tf.__version__.startswith('2')
 
 tf.get_logger().setLevel('ERROR')
 from absl import logging
+
 logging.set_verbosity(logging.ERROR)
 
-def benchmark():
 
-    CWD_PATH = os.getcwd()
-    images = [f for f in os.listdir(CWD_PATH+"/test_img") if isfile(join(CWD_PATH+"/test_img", f)) and not f.startswith('.')]
-    models = [f for f in os.listdir(CWD_PATH + "/models") if not f.startswith('.')]
+def benchmark():
+    BASE_DIR = os.path.join(os.path.dirname(__file__), '..')
+
+    models = [f for f in os.listdir(BASE_DIR + "/models") if not f.startswith('.')]
 
     test_data = object_detector.DataLoader.from_pascal_voc(
-        'kb4yg/test',
-        'kb4yg/test',
+        BASE_DIR + '/test_data',
+        BASE_DIR + '/test_data',
         ['car', 'motorcycle', 'person', 'bus', 'bicycle']
     )
 
-    for img in images:
-        print(img)
-        for m in models:
-            print("\t" + m)
-            # model.evaluate_tflite('android.tflite', test_data)
-            object_detector.evaluate_tflite("models/"+m, test_data)
+    models = ["kb4yg_v1.tflite"]
+    for m in models:
+        print("\t" + m)
+        # model.evaluate_tflite('kb4yg_v1.tflite', test_data)
 
+        spec = model_spec.get('efficientdet_lite0')
+        model = object_detector.create(test_data, model_spec=spec, do_train=False)
 
-            train_data = object_detector.DataLoader.from_pascal_voc(
-                'kb4yg/train',
-                'kb4yg/train',
-                ['car', 'motorcycle','person','bus','bicycle']
-            )
-            spec = model_spec.get('efficientdet_lite0')
-            model = object_detector.create(train_data, model_spec=spec, batch_size=12, train_whole_model=True,
-                                           epochs=20, validation_data=train_data)
-            result = model.evaluate_tflite("models/"+m, test_data)
-            # result = imgClassify("models/"+m, "test_img/"+img, DEBUG=True)
+        # only seems to work on models that have the labelmap inside the tflite metadata, so can't run on models with
+        # labelmap
+        result = model.evaluate_tflite("/home/erik/PycharmProjects/ml/models/" + m, test_data)
+        print(result)
 
 
 if __name__ == "__main__":
-     benchmark()
+    benchmark()
