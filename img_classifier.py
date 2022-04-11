@@ -2,17 +2,15 @@
 #
 # Author: Erik Handeland Date: 12/12/2021
 # Description: This program uses a TensorFlow Lite object detection model to
-# perform object detection on an image. It creates a json file containing a
+# perform object detection on an image. It creates a dict containing a
 # list of detected objects and the count for each object. It also save a copy
-# of the image with draws boxes and scores around the objects of interest in each image.
+# of the image with draws boxes and scores around the objects of interest for each image.
 #
 # This code is based off the TensorFlow Lite image classification example at:
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/examples/python/label_image.py
 # Add the following github repo by Evan Juras:
 # https://github.com/EdjeElectronics/TensorFlow-Lite-Object-Detection-on-Android-and-Raspberry-Pi
 #
-# Removed unnecessary features and customised data formatting for exporting
-# to external services
 
 # Import packages
 import os
@@ -20,10 +18,28 @@ from os.path import exists
 import cv2
 import numpy as np
 import importlib.util
+from tflite_support import metadata
 
 
-def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
-                GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", DEBUG=False):
+# Extract metadata from the .tflite file
+def load_metadata_labels(PATH_TO_MODEL):
+    label_list = []
+
+    try:
+        displayer = metadata.MetadataDisplayer.with_model_file(PATH_TO_MODEL)
+        file_name = displayer.get_packed_associated_file_list()[0]
+    except ValueError:
+        # The model does not have metadata.
+        return label_list
+
+    if file_name:
+        label_map_file = displayer.get_associated_file_buffer(file_name).decode()
+        label_list = list(filter(len, label_map_file.splitlines()))
+    return label_list
+
+
+def imgClassify(MODEL_PATH: str, IMG_PATH, min_conf_threshold=0.50,
+                GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", BENCHMARK=False, COORDS=False):
     objects = []
 
     # Import TensorFlow libraries
@@ -37,11 +53,10 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
 
     # Get path to current working directory
     CWD_PATH = os.getcwd()
-
     # Path to .tflite file, which contains the model that is used for object detection
-    PATH_TO_CKPT = os.path.join(CWD_PATH, MODEL_NAME, GRAPH_NAME)
-    if not exists(PATH_TO_CKPT):
-        print("detect.tflite not found! at path: " + PATH_TO_CKPT)
+    PATH_TO_MODEL = os.path.join(CWD_PATH, MODEL_PATH, GRAPH_NAME)
+    if not exists(PATH_TO_MODEL):
+        print("detect.tflite not found! at path: " + PATH_TO_MODEL)
         return {
             "error": "Invalid model path",
             "vehicles": -1,
@@ -50,30 +65,26 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
             "objects": objects,
         }
 
-    # Path to label map file
-    PATH_TO_LABELS = os.path.join(CWD_PATH, MODEL_NAME, LABELMAP_NAME)
-    if not exists(PATH_TO_LABELS):
-        print("labelmap.txt not found! at path: " + PATH_TO_LABELS)
-        return {
-            "error": "Invalid label map path",
-            "vehicles": -1,
-            "pedestrians": -1,
-            "confidence-threshold": min_conf_threshold,
-            "objects": objects,
-        }
+    # Load label list from metadata or from labelmap file
+    labels = load_metadata_labels(PATH_TO_MODEL)
 
-    # Load the label map
-    with open(PATH_TO_LABELS, 'r') as f:
-        labels = [line.strip() for line in f.readlines()]
-
-    # Have to do a weird fix for label map if using the COCO "starter model" from
-    # https://www.tensorflow.org/lite/models/object_detection/overview
-    # First label is '???', which has to be removed.
-    if labels[0] == '???':
-        del (labels[0])
+    if not labels:  # DEPRECATED this is the old way of loading labels, new ML models should have it as metadata
+        PATH_TO_LABELS = os.path.join(CWD_PATH, MODEL_PATH, LABELMAP_NAME)
+        if not exists(PATH_TO_LABELS):
+            print("No labelmap in metadata and no labelmap.txt found! at path: " + PATH_TO_LABELS)
+            return {
+                "error": "No labelmap found",
+                "vehicles": -1,
+                "pedestrians": -1,
+                "confidence-threshold": min_conf_threshold,
+                "objects": objects,
+            }
+        # Load the label map
+        with open(PATH_TO_LABELS, 'r') as f:
+            labels = [line.strip() for line in f.readlines()]
 
     # Load the Tensorflow Lite model.
-    interpreter = Interpreter(model_path=PATH_TO_CKPT)
+    interpreter = Interpreter(model_path=PATH_TO_MODEL)
     interpreter.allocate_tensors()
 
     # Get model details
@@ -81,14 +92,12 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
     output_details = interpreter.get_output_details()
     height = input_details[0]['shape'][1]
     width = input_details[0]['shape'][2]
-
     floating_model = (input_details[0]['dtype'] == np.float32)
-
     input_mean = 127.5
     input_std = 127.5
 
     # Load image and resize to expected shape [1xHxWx3]
-    image = cv2.imread(IM_NAME)
+    image = cv2.imread(IMG_PATH)
     if image is None:
         print("Image not found, check path")
         return {
@@ -134,8 +143,8 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
             br = (xmax, ymin)
             tl = (xmin, ymax)
 
+            # Draw detection box on image
             cv2.rectangle(image, bl, tr, (10, 255, 0), 2)
-
             # Draw label
             object_name = labels[int(classes[i])]  # Look up object name from "labels" array using class index
             object_score = int(scores[i] * 100)
@@ -148,11 +157,11 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
             cv2.putText(image, label, (xmin, label_ymin - 7),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw label text
 
-            # Create data object and append to list of detected objects
+            # Add object to objects list
             obj = {
                 "name": object_name,
                 "confidence": scores[i],
-                "coord": {"top-left": tl, "top-right": tr, "bottom-right": br, "bottom-left": bl}
+                "coord": {"top-left": tl, "top-right": tr, "bottom-right": br, "bottom-left": bl} if COORDS else {},
             }
             objects.append(obj)
 
@@ -165,11 +174,8 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
         elif obj["name"] == "person":
             people += 1
 
-    if DEBUG:
-        print("cars: ", cars)
-        print("people: ", people)
-
-        IMG_PATH = os.path.join(CWD_PATH + "/benchmark/" + MODEL_NAME, IM_NAME[:-4] + "_box.png")
+    if BENCHMARK:
+        IMG_PATH = os.path.join(CWD_PATH + "/benchmark/" + MODEL_PATH, IMG_PATH[:-4] + "_box.jpg")
         cv2.imwrite(IMG_PATH, image)
 
     return {
@@ -179,6 +185,7 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
         "confidence-threshold": min_conf_threshold,
         "objects": objects,
     }
+
 
 # Sample function for detecting if object is in a certain area, useful if some parking lots have handicapped or
 # oversize parking spaces
