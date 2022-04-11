@@ -23,7 +23,7 @@ import importlib.util
 
 
 def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
-                GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", DEBUG=False):
+                GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", DEBUG=False, COORDS=False):
     objects = []
 
     # Import TensorFlow libraries
@@ -151,9 +151,12 @@ def imgClassify(MODEL_NAME: str, IM_NAME='test1.jpg', min_conf_threshold=0.50,
             # Create data object and append to list of detected objects
             obj = {
                 "name": object_name,
-                "confidence": scores[i],
-                "coord": {"top-left": tl, "top-right": tr, "bottom-right": br, "bottom-left": bl}
+                "confidence": scores[i]
             }
+
+            if COORDS:
+                obj["coord"] = {"top-left": tl, "top-right": tr, "bottom-right": br, "bottom-left": bl}
+
             objects.append(obj)
 
     # count vehicles and pedestrians
