@@ -1,0 +1,2 @@
+https://tfhub.dev/tensorflow/lite-model/efficientdet/lite3/detection/metadata/1
+mAP on COCO 2017 37.70%

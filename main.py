@@ -17,11 +17,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--image',
                     help='image to classify',
                     type=str,
-                    default='test_img/parking-lot-8.jpg')
+                    default='test_img/parking-lot-5.jpg')
 parser.add_argument('--model',
                     help='Path to model folder',
                     type=str,
-                    default='models/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29')
+                    default='models/lite-model_efficientdet_lite4_detection_metadata_1')
 
 args = parser.parse_args()
 MDL_PATH = args.model
