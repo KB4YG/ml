@@ -1,3 +1,4 @@
 /.idea/
 /img/
 /benchmark/models/
+.DS_Store
