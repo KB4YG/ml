@@ -19,7 +19,7 @@ def benchmark():
     for img in images:
         print(img)
         for m in models:
-            objects, count = imgClassify("models/"+m, "test_img/"+img, DEBUG=True)
+            objects, count = imgClassify("models/" + m, "test_img/" + img, BENCHMARK=True)
             print("\t" + m)
             print("\t\t", count)
             print("\t\t", objects)
