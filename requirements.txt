@@ -1,5 +1,4 @@
 opencv-python
 numpy~=1.22.3
 tensorflow~=2.8.0
-tflite-runtime
 tflite_support
