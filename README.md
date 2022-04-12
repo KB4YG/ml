@@ -77,7 +77,7 @@ This repo contains all the code for running our Machine learning model. You'll f
 <!-- Prerequisites -->
 ### :bangbang: Prerequisites
 
-There are a view dependecies that can be tricky to install. Tensorflow lite is one of them
+There are a view dependecies that can be tricky to install. Tensorflow lite is one of them. Tested on linux, pythom 3.9
 
 ```bash
 # Requires the latest pip
@@ -89,8 +89,7 @@ pip install numpy
 
 # Install tensorflow
 pip install tensorflow
-pip install tflite-runtime
-pip install tflite_support
+pip install tflite_support>=0.3.0
 ```
    
 <!-- Running Tests -->
