@@ -20,6 +20,15 @@ import numpy as np
 import importlib.util
 from tflite_support import metadata
 
+# Import TensorFlow libraries
+# If tflite_runtime is installed, import interpreter from tflite_runtime, else import from regular tensorflow
+# If using Coral Edge TPU, import the load_delegate library
+pkg = importlib.util.find_spec('tflite_runtime')
+if pkg:
+     from tflite_runtime.interpreter import Interpreter
+else:
+     from tensorflow.lite.python.interpreter import Interpreter
+
 
 # Extract metadata from the .tflite file
 def load_metadata_labels(PATH_TO_MODEL):
@@ -38,18 +47,9 @@ def load_metadata_labels(PATH_TO_MODEL):
     return label_list
 
 
-def imgClassify(MODEL_PATH: str, IMG_PATH, min_conf_threshold=0.50,
-                GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", BENCHMARK=False, COORDS=False):
+def imgClassify(MODEL_PATH: str, IMG_PATH: str, MIN_CONF_LEVEL=0.50,
+                GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", SAVE_IMG=False, COORDS=False):
     objects = []
-
-    # Import TensorFlow libraries
-    # If tflite_runtime is installed, import interpreter from tflite_runtime, else import from regular tensorflow
-    # If using Coral Edge TPU, import the load_delegate library
-    pkg = importlib.util.find_spec('tflite_runtime')
-    if pkg:
-        from tflite_runtime.interpreter import Interpreter
-    else:
-        from tensorflow.lite.python.interpreter import Interpreter
 
     # Get path to current working directory
     CWD_PATH = os.getcwd()
@@ -61,7 +61,7 @@ def imgClassify(MODEL_PATH: str, IMG_PATH, min_conf_threshold=0.50,
             "error": "Invalid model path",
             "vehicles": -1,
             "pedestrians": -1,
-            "confidence-threshold": min_conf_threshold,
+            "confidence-threshold": MIN_CONF_LEVEL,
             "objects": objects,
         }
 
@@ -76,7 +76,7 @@ def imgClassify(MODEL_PATH: str, IMG_PATH, min_conf_threshold=0.50,
                 "error": "No labelmap found",
                 "vehicles": -1,
                 "pedestrians": -1,
-                "confidence-threshold": min_conf_threshold,
+                "confidence-threshold": MIN_CONF_LEVEL,
                 "objects": objects,
             }
         # Load the label map
@@ -104,7 +104,7 @@ def imgClassify(MODEL_PATH: str, IMG_PATH, min_conf_threshold=0.50,
             "error": "Image not found, check path",
             "vehicles": -1,
             "pedestrians": -1,
-            "confidence-threshold": min_conf_threshold,
+            "confidence-threshold": MIN_CONF_LEVEL,
             "objects": objects,
         }
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -128,7 +128,7 @@ def imgClassify(MODEL_PATH: str, IMG_PATH, min_conf_threshold=0.50,
     # Loop over all detections and draw detection box if confidence is above minimum threshold
     for i in range(len(scores)):
 
-        if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
+        if ((scores[i] > MIN_CONF_LEVEL) and (scores[i] <= 1.0)):
             # Get bounding box coordinates and draw box Interpreter can
             # return coordinates that are outside of image dimensions,
             # need to force them to be within image using max() and min()
@@ -174,15 +174,15 @@ def imgClassify(MODEL_PATH: str, IMG_PATH, min_conf_threshold=0.50,
         elif obj["name"] == "person":
             people += 1
 
-    if BENCHMARK:
-        IMG_PATH = os.path.join(CWD_PATH + "/benchmark/" + MODEL_PATH, IMG_PATH[:-4] + "_box.jpg")
+    if SAVE_IMG:
+        IMG_PATH = os.path.join(CWD_PATH, IMG_PATH[:-4] + "_box.jpg")
         cv2.imwrite(IMG_PATH, image)
 
     return {
         "error": "",
         "vehicles": cars,
         "pedestrians": people,
-        "confidence-threshold": min_conf_threshold,
+        "confidence-threshold": MIN_CONF_LEVEL,
         "objects": objects,
     }
 
