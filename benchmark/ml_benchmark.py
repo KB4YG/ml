@@ -14,7 +14,7 @@ from obj_detection import objDetection
 
 def benchmark():
     CWD_PATH = os.getcwd()
-    f = open(CWD_PATH + "/results.csv", 'w')
+    f = open(CWD_PATH + "/benchmark/results.csv", 'w')
     writer = csv.writer(f)
     images = [f for f in os.listdir(CWD_PATH + "/test_img") if
               isfile(join(CWD_PATH + "/test_img", f)) and not f.startswith('.')]
