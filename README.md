@@ -99,7 +99,7 @@ pip install tflite_support
 To run tests, run the following command
 
 ```bash
-  python test.py
+  pytest 
 ```
 
 <!-- Usage -->
