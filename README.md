@@ -116,7 +116,7 @@ To run tests, run the following command
 </details>
 
 ```bash
-  python detect.py --image test_img/parking-lot-1.jpg --model models/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29
+  python detect.py --image test_img/parking-lot-1.jpg --model-metadata models/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29
 ```
 
 ### From function

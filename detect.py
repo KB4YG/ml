@@ -1,12 +1,12 @@
 # Just a wrapper to call img_classifier from the command line
 # Run: python main.py --image "image.jpg"
 
-from img_classifier import imgClassify
+from obj_detection import objDetection
 import argparse
 
 
 def run():
-    result = imgClassify(MDL_PATH, IMG_PATH)
+    result = objDetection(MDL_PATH, IMG_PATH, SAVE_IMG=True)
     print("Number of vehicles: ", result["vehicles"])
     print("Number of pedestrians: ", result["pedestrians"])
     print("Number of objects: ", result["objects"])
@@ -18,10 +18,10 @@ parser.add_argument('--image',
                     help='image to classify',
                     type=str,
                     default='test_img/parking-lot-5.jpg')
-parser.add_argument('--model',
-                    help='Path to model folder',
+parser.add_argument('--model-metadata',
+                    help='Path to model-metadata folder',
                     type=str,
-                    default='models/lite-model_efficientdet_lite4_detection_metadata_1')
+                    default='models/detect_21k')
 
 args = parser.parse_args()
 MDL_PATH = args.model
