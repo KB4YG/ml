@@ -90,6 +90,9 @@ pip install numpy
 # Install tensorflow
 pip install tensorflow
 pip install tflite_support>=0.3.0
+
+# install local package objdetection must clone and cd into the repo
+pip install -e .
 ```
    
 <!-- Running Tests -->
