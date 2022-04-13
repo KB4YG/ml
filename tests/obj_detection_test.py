@@ -1,4 +1,5 @@
 from obj_detection import objDetection, load_labels
+from from_root import from_root
 
 # valid inputs
 IMG_PATH = 'tests/images/parking-lot.jpg'
@@ -46,12 +47,13 @@ def test_bad_model_path():
 
 
 def test_load_metadata_labels():
-    result = load_labels(MDL_PATH + "/detect.tflite", MDL_PATH + "/labelmap.txt")
+    result = load_labels(str(from_root(MDL_PATH + "/detect.tflite")), str(from_root(MDL_PATH + "/labelmap.txt")))
     assert result != []
 
 
 def test_load_labelmap():
-    result = load_labels("tests/models/model-no-metadata/detect.tflite", "tests/models/model-no-metadata/labelmap.txt")
+    path = "tests/models/model-no-metadata"
+    result = load_labels(str(from_root(path+"/detect.tflite")), str(from_root(path+"/labelmap.txt")))
     assert result != []
 
 
