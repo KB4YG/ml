@@ -15,8 +15,7 @@ def test_detection():
         "confidence-threshold": CONF_LEVEL,
         "objects": [{'name': 'car', 'confidence': 0.73046875, 'coord': {}}],
     }
-
-    result = objDetection(MDL_PATH, IMG_PATH)
+    result = objDetection(str(from_root(MDL_PATH)), str(from_root(IMG_PATH)))
     assert result == expected
 
 
@@ -29,7 +28,7 @@ def test_bad_img_path():
         "objects": [],
     }
 
-    result = objDetection(MDL_PATH, ".bad_path")
+    result = objDetection(str(from_root(MDL_PATH)), ".bad_path")
     assert result == expected
 
 
@@ -42,7 +41,7 @@ def test_bad_model_path():
         "objects": [],
     }
 
-    result = objDetection(".bad_path", IMG_PATH)
+    result = objDetection(".bad_path", str(from_root(IMG_PATH)))
     assert result == expected
 
 
@@ -73,5 +72,5 @@ def test_detection_coords():
                   'top-right': (1241, 674)}
              }]
     }
-    result = objDetection(MDL_PATH, IMG_PATH, COORDS=True)
+    result = objDetection(str(from_root(MDL_PATH)), str(from_root(IMG_PATH)), COORDS=True)
     assert result == expected
