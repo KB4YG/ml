@@ -79,7 +79,6 @@ def objDetection(MODEL_PATH: str, IMG_PATH: str, MIN_CONF_LEVEL=0.50,
     PATH_TO_MODEL = os.path.join(CWD_PATH, MODEL_PATH)
     PATH_TO_GRAPH = os.path.join(PATH_TO_MODEL, GRAPH_NAME)
     PATH_TO_LABELS = os.path.join(PATH_TO_MODEL, LABELMAP_NAME)
-    IMG_PATH = os.path.join(CWD_PATH, IMG_PATH)
 
     if not exists(PATH_TO_GRAPH):
         print("detect.tflite not found! at path: " + PATH_TO_GRAPH)
