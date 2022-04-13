@@ -19,6 +19,7 @@ import cv2
 import numpy as np
 import importlib.util
 from tflite_support import metadata
+from from_root import from_root
 
 # Import TensorFlow libraries
 # If tflite_runtime is installed, import interpreter from tflite_runtime, else import from regular tensorflow
@@ -72,12 +73,13 @@ def objDetection(MODEL_PATH: str, IMG_PATH: str, MIN_CONF_LEVEL=0.50,
                  GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", SAVE_IMG=False, COORDS=False):
     objects = []
 
-    # Get path to current working directory
-    CWD_PATH = os.getcwd()
+    # Get path to project root
+    CWD_PATH = str(from_root())
     # Path to .tflite file, which contains the model-metadata that is used for object detection
     PATH_TO_MODEL = os.path.join(CWD_PATH, MODEL_PATH)
     PATH_TO_GRAPH = os.path.join(PATH_TO_MODEL, GRAPH_NAME)
     PATH_TO_LABELS = os.path.join(PATH_TO_MODEL, LABELMAP_NAME)
+    IMG_PATH = os.path.join(CWD_PATH, IMG_PATH)
 
     if not exists(PATH_TO_GRAPH):
         print("detect.tflite not found! at path: " + PATH_TO_GRAPH)

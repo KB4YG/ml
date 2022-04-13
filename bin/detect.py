@@ -10,18 +10,19 @@ def run():
     print("Number of vehicles: ", result["vehicles"])
     print("Number of pedestrians: ", result["pedestrians"])
     print("Number of objects: ", result["objects"])
+    print("Error: ", result["error"])
 
 
 # get commandline arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--image',
-                    help='image to classify',
+                    help='path to image file',
                     type=str,
-                    default='test_img/parking-lot-5.jpg')
-parser.add_argument('--model-metadata',
-                    help='Path to model-metadata folder',
+                    default='images/parking-lot-5.jpg')
+parser.add_argument('--model',
+                    help='Path to model directory',
                     type=str,
-                    default='models/detect_21k')
+                    default='models/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29')
 
 args = parser.parse_args()
 MDL_PATH = args.model
