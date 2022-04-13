@@ -1,1 +1,0 @@
-https://github.com/ecd1012/rpi_road_object_detection/tree/main/TFLite_model_bbd
