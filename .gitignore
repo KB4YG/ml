@@ -2,3 +2,5 @@
 /img/
 /benchmark/models/
 .DS_Store
+/build/
+/obj_detection.egg-info/
