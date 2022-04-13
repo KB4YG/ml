@@ -12,7 +12,7 @@
   <a href="https://github.com/KB4YG/ml/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/KB4YG/ml" alt="contributors" />
   </a>
-  <a href="">
+  <a href="https://github.com/KB4YG/ml/commits">
     <img src="https://img.shields.io/github/last-commit/KB4YG/ml" alt="last update" />
   </a>
   <a href="https://github.com/KB4YG/ml/stargazers">
