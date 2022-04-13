@@ -1,8 +1,8 @@
 from obj_detection import objDetection, load_labels
 
 # valid inputs
-IMG_PATH = 'unit_test/parking-lot.jpg'
-MDL_PATH = 'unit_test/model-metadata'
+IMG_PATH = 'tests/images/parking-lot.jpg'
+MDL_PATH = 'tests/models/model-metadata'
 CONF_LEVEL = 0.5
 
 
@@ -51,7 +51,7 @@ def test_load_metadata_labels():
 
 
 def test_load_labelmap():
-    result = load_labels("unit_test/model-no-metadata/detect.tflite", "unit_test/model-no-metadata/labelmap.txt")
+    result = load_labels("tests/models/model-no-metadata/detect.tflite", "tests/models/model-no-metadata/labelmap.txt")
     assert result != []
 
 

@@ -14,10 +14,10 @@ from obj_detection import objDetection
 
 def benchmark():
     CWD_PATH = os.getcwd()
-    f = open(CWD_PATH + "/benchmark/results.csv", 'w')
+    f = open(CWD_PATH + "/tests/benchmark/results.csv", 'w')
     writer = csv.writer(f)
-    images = [f for f in os.listdir(CWD_PATH + "/test_img") if
-              isfile(join(CWD_PATH + "/test_img", f)) and not f.startswith('.')]
+    images = [f for f in os.listdir(CWD_PATH + "/images") if
+              isfile(join(CWD_PATH + "/images", f)) and not f.startswith('.')]
     models = [f for f in os.listdir(CWD_PATH + "/models") if not f.startswith('.')]
     writer.writerow(["image", "type"] + models)
     errors = []
@@ -30,7 +30,7 @@ def benchmark():
         print(f'starting img {img}')
         for m in models:
             print(f'starting Model {m}')
-            result = objDetection("models/" + m, "test_img/" + img)
+            result = objDetection("models/" + m, "images/" + img)
             vehicles.append(result["vehicles"])
             pedestrians.append(result["pedestrians"])
             objects.append(result["objects"])
