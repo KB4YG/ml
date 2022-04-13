@@ -118,7 +118,7 @@ To run tests, run the following command
 </details>
 
 ```bash
-  python detect.py --image images/parking-lot-1.jpg --model-metadata models/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29
+  python detect.py --image {FULL_IMG_PATH} --model coco_ssd_mobilenet_v1_1.0_quant_2018_06_29
 ```
 
 ### From function
