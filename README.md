@@ -161,6 +161,6 @@ Project Link: [https://github.com/Louis3797/awesome-readme-template](https://git
 ## :gem: Acknowledgements
 
  - [Shields.io](https://shields.io/)
- - [Readme Template](https://github.com/othneildrew/Best-README-Template)
+ - [Readme Template](https://github.com/Louis3797/awesome-readme-template)
  - [TF-Lite Tutorial](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/examples/python/label_image.py)
  - [TF on RPi Tutorial](https://github.com/EdjeElectronics/TensorFlow-Lite-Object-Detection-on-Android-and-Raspberry-Pi)
