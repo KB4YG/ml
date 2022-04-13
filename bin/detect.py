@@ -16,11 +16,11 @@ def run():
 # get commandline arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--image',
-                    help='image to detect objects in',
+                    help='path to image file',
                     type=str,
                     default='images/parking-lot-5.jpg')
 parser.add_argument('--model',
-                    help='Path to model folder',
+                    help='Path to model directory',
                     type=str,
                     default='models/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29')
 

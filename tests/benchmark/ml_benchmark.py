@@ -10,15 +10,17 @@ import os
 import csv
 from os.path import isfile, join
 from obj_detection import objDetection
+from from_root import from_root
 
 
 def benchmark():
     CWD_PATH = os.getcwd()
-    f = open(CWD_PATH + "/tests/benchmark/results.csv", 'w')
+    PARENT_PATH = str(from_root())
+    f = open(CWD_PATH + "/results.csv", 'w')
     writer = csv.writer(f)
-    images = [f for f in os.listdir(CWD_PATH + "/images") if
-              isfile(join(CWD_PATH + "/images", f)) and not f.startswith('.')]
-    models = [f for f in os.listdir(CWD_PATH + "/models") if not f.startswith('.')]
+    images = [f for f in os.listdir(str(from_root("images"))) if
+              isfile(join(str(from_root("images")), f)) and not f.startswith('.')]
+    models = [f for f in os.listdir(str(from_root("models"))) if not f.startswith('.')]
     writer.writerow(["image", "type"] + models)
     errors = []
 
