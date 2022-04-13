@@ -69,26 +69,38 @@ def load_labels(PATH_TO_GRAPH, PATH_TO_LABELS):
     return label_list
 
 
+# MODEL_NAME: should be the name of a directory in the models directory
+# IMG_PATH: should be the path full path to your target image
+# COORDS: Whether to return coordinates of detected objects
+# MIN_CONF_LEVEL: is the minimum confidence level to be considered a detection 0-1
+# PATH_TO_GRAPH & LABELMAP_NAME: Name of the .tflite file and the labelmap file. Defaults should work for most cases
+# SAVED_IMG_PATH: Directory to save the image with boxes and scores. If not specified, no image will be saved
 def objDetection(MODEL_NAME: str, IMG_PATH: str, MIN_CONF_LEVEL=0.50,
-                 GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", SAVE_IMG=False, COORDS=False):
+                 GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", SAVED_IMG_PATH="", COORDS=False):
     objects = []
 
     # Get path to project root
     CWD_PATH = str(from_root())
     # Path to .tflite file, which contains the model-metadata that is used for object detection
-    PATH_TO_MODEL = os.path.join(CWD_PATH, "models", MODEL_NAME)
-    PATH_TO_GRAPH = os.path.join(PATH_TO_MODEL, GRAPH_NAME)
-    PATH_TO_LABELS = os.path.join(PATH_TO_MODEL, LABELMAP_NAME)
-
-    if not exists(PATH_TO_GRAPH):
-        print("detect.tflite not found! at path: " + PATH_TO_GRAPH)
-        return {
-            "error": "Invalid model-metadata path",
-            "vehicles": -1,
-            "pedestrians": -1,
-            "confidence-threshold": MIN_CONF_LEVEL,
-            "objects": objects,
-        }
+    try:  # running from pip install - pip install has different path structure that source
+        PATH_TO_MODEL = os.path.join(CWD_PATH, "models", MODEL_NAME)
+        PATH_TO_GRAPH = os.path.join(PATH_TO_MODEL, GRAPH_NAME)
+        PATH_TO_LABELS = os.path.join(PATH_TO_MODEL, LABELMAP_NAME)
+        if not exists(PATH_TO_GRAPH):
+            raise FileNotFoundError
+    except FileNotFoundError:  # running from source
+        PATH_TO_MODEL = os.path.join(CWD_PATH, "obj_detection", "models", MODEL_NAME)
+        PATH_TO_GRAPH = os.path.join(PATH_TO_MODEL, GRAPH_NAME)
+        PATH_TO_LABELS = os.path.join(PATH_TO_MODEL, LABELMAP_NAME)
+        if not exists(PATH_TO_GRAPH):
+            print("detect.tflite not found! at path: " + PATH_TO_GRAPH)
+            return {
+                "error": "Invalid model-metadata path",
+                "vehicles": -1,
+                "pedestrians": -1,
+                "confidence-threshold": MIN_CONF_LEVEL,
+                "objects": objects,
+            }
 
     # Load label list from metadata or from labelmap file
     labels = load_labels(PATH_TO_GRAPH, PATH_TO_LABELS)
@@ -194,9 +206,10 @@ def objDetection(MODEL_NAME: str, IMG_PATH: str, MIN_CONF_LEVEL=0.50,
         elif obj["name"] == "person":
             people += 1
 
-    if SAVE_IMG:
-        IMG_PATH = os.path.join(CWD_PATH, IMG_PATH[:-4] + "_box.jpg")
-        cv2.imwrite(IMG_PATH, image)
+    if SAVED_IMG_PATH:
+        _, tail = os.path.split(IMG_PATH)
+        SAVED_IMG_PATH = os.path.join(SAVED_IMG_PATH, tail[:-4] + "_box.jpg")
+        cv2.imwrite(SAVED_IMG_PATH, image)
 
     return {
         "error": "",
