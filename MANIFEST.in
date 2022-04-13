@@ -1,1 +1,1 @@
-recursive-include models/ *
+recursive-include obj_detection/models/ *
