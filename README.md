@@ -30,7 +30,7 @@
   <span> · </span>
     <a href="https://github.com/KB4YG/ml">ML</a>
   <span> · </span>
-    <a href="https://github.com/KB4YG/ml/iot">IoT</a>
+    <a href="https://github.com/KB4YG/iot">IoT</a>
   </h4>
 </div>
 
