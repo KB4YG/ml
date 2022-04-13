@@ -3,10 +3,15 @@
 
 from obj_detection import objDetection
 import argparse
+from from_root import from_root
 
 
 def run():
-    result = objDetection(MDL_PATH, IMG_PATH, SAVE_IMG=True)
+    img_path = IMG_PATH
+    if img_path == 'images/parking-lot-5.jpg':
+        img_path = str(from_root(img_path))
+
+    result = objDetection(MDL_PATH, img_path)
     print("Number of vehicles: ", result["vehicles"])
     print("Number of pedestrians: ", result["pedestrians"])
     print("Number of objects: ", result["objects"])
@@ -20,9 +25,10 @@ parser.add_argument('--image',
                     type=str,
                     default='images/parking-lot-5.jpg')
 parser.add_argument('--model',
-                    help='Path to model directory',
+                    help='Select model to use: coco_ssd_mobilenet_v1_1.0_quant_2018_06_29, '
+                         'lite-model_efficientdet_lite2_detection_metadata_1, TFLite_model_bbd',
                     type=str,
-                    default='models/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29')
+                    default='coco_ssd_mobilenet_v1_1.0_quant_2018_06_29')
 
 args = parser.parse_args()
 MDL_PATH = args.model

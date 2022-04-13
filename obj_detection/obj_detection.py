@@ -69,14 +69,14 @@ def load_labels(PATH_TO_GRAPH, PATH_TO_LABELS):
     return label_list
 
 
-def objDetection(MODEL_PATH: str, IMG_PATH: str, MIN_CONF_LEVEL=0.50,
+def objDetection(MODEL_NAME: str, IMG_PATH: str, MIN_CONF_LEVEL=0.50,
                  GRAPH_NAME="detect.tflite", LABELMAP_NAME="labelmap.txt", SAVE_IMG=False, COORDS=False):
     objects = []
 
     # Get path to project root
     CWD_PATH = str(from_root())
     # Path to .tflite file, which contains the model-metadata that is used for object detection
-    PATH_TO_MODEL = os.path.join(CWD_PATH, MODEL_PATH)
+    PATH_TO_MODEL = os.path.join(CWD_PATH, "models", MODEL_NAME)
     PATH_TO_GRAPH = os.path.join(PATH_TO_MODEL, GRAPH_NAME)
     PATH_TO_LABELS = os.path.join(PATH_TO_MODEL, LABELMAP_NAME)
 
