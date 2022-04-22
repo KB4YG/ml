@@ -54,13 +54,13 @@
 
 <!-- About the Project -->
 ## :star2: About the Project
-This repo contains all the code for running our Machine learning model. You'll find the code for the object detection in `img_classifier.py` and a commandline interface in `detect.py`.
+This repo contains all the code and setup instructions for running our running software on our Raspberry pi nodes. You'll find the code for the main script in in `src/main.py`.
 
 <!-- Screenshots -->
 ### :camera: Screenshots
 
 <div align="center"> 
-  <img src="https://i.imgur.com/Cse10ww.png" alt="screenshot" width="600px"/>
+  <img src="https://i.imgur.com/DoOP0bl.jpg" alt="screenshot" width="600px"/>
 </div>
 
 <!-- TechStack -->
