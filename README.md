@@ -66,9 +66,14 @@ This repo contains all the code and setup instructions for running our running s
 <!-- TechStack -->
 ### :space_invader: Tech Stack
 
-<li><a href="https://www.tensorflow.org/lite">Tensorflow Lite</a></li>
-<li><a href="https://roboflow.com">Roboflow</a></li>
-<li><a href="https://opencv.org">OpenCV</a></li>
+#### Software
+<li><a href="https://github.com/sixfab/sixfab-power-python-api">Sixfab Power Python API</a></li>
+<li><a href="https://roboflow.com">Python 3</a></li>
+#### Hardware
+<li><a href="https://opencv.org">Raspberry Pi 4 B 2GB</a></li>
+<li><a href="https://opencv.org">SixFab IoT Raspberry Pi Hat</a></li>
+<li><a href="https://opencv.org">Solar Panel B</a></li>
+<li><a href="https://opencv.org">RBattert etc B</a></li>
 
 
 <!-- Getting Started -->
