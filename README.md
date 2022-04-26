@@ -54,26 +54,21 @@
 
 <!-- About the Project -->
 ## :star2: About the Project
-This repo contains all the code and setup instructions for running our running software on our Raspberry pi nodes. You'll find the code for the main script in in `src/main.py`.
+This repo contains all the code for running our Machine learning model. You'll find the code for the object detection in `img_classifier.py` and a commandline interface in `detect.py`.
 
 <!-- Screenshots -->
 ### :camera: Screenshots
 
 <div align="center"> 
-  <img src="https://i.imgur.com/DoOP0bl.jpg" alt="screenshot" width="600px"/>
+  <img src="https://i.imgur.com/Cse10ww.png" alt="screenshot" width="600px"/>
 </div>
 
 <!-- TechStack -->
 ### :space_invader: Tech Stack
 
-#### Software
-<li><a href="https://github.com/sixfab/sixfab-power-python-api">Sixfab Power Python API</a></li>
-<li><a href="https://roboflow.com">Python 3</a></li>
-#### Hardware
-<li><a href="https://opencv.org">Raspberry Pi 4 B 2GB</a></li>
-<li><a href="https://opencv.org">SixFab IoT Raspberry Pi Hat</a></li>
-<li><a href="https://opencv.org">Solar Panel B</a></li>
-<li><a href="https://opencv.org">RBattert etc B</a></li>
+<li><a href="https://www.tensorflow.org/lite">Tensorflow Lite</a></li>
+<li><a href="https://roboflow.com">Roboflow</a></li>
+<li><a href="https://opencv.org">OpenCV</a></li>
 
 
 <!-- Getting Started -->
@@ -169,3 +164,35 @@ Project Link: [https://github.com/Louis3797/awesome-readme-template](https://git
  - [Readme Template](https://github.com/Louis3797/awesome-readme-template)
  - [TF-Lite Tutorial](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/examples/python/label_image.py)
  - [TF on RPi Tutorial](https://github.com/EdjeElectronics/TensorFlow-Lite-Object-Detection-on-Android-and-Raspberry-Pi)
+
+
+
+
+
+# iot
+
+
+
+
+
+## Hardware Installation
+First mount the BMS:
+
+(Step 1 is optional. I don't think we actually need it since it adds extra power consumption.)
+1.Attach the cooling fan to the HAT.
+The Red, Yellow, Black wires of the fan goes to the +, P, - of the J6 connector respectively.
+
+2. Attach 40 pin header to the HAT that comes with the HAT.
+
+3. Attach the HAT to the Raspberry Pi.
+
+4. Insert the protected 18650 battery into the battery holder
+
+5. Connect power to the UPS HAT.
+Use the power input of the UPS HAT to power your system. (DO NOT PLUG BOTH PI and POWER HAT IN, ONLY POWER HAT)
+
+5.5 The BMS hat has a slot for the camera to fit through
+
+6. Now install the modem hat
+
+Link to larger case to fit everything: https://www.polycase.com/zh-100802 
