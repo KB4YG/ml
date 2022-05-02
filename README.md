@@ -54,7 +54,7 @@
 
 <!-- About the Project -->
 ## :star2: About the Project
-This repo contains all the code for running our Machine learning model. You'll find the code for the object detection in `img_classifier.py` and a commandline interface in `detect.py`.
+This repo contains all the code for running our Machine learning model. You'll find the code for the object detection in `img_classifier.py` and a commandline interface in `detect.py`. For a deeper dive into the code and how to train your own ML model check out the [repo wiki](https://github.com/KB4YG/ml/wiki), otherwise install/usage instructions are below.
 
 <!-- Screenshots -->
 ### :camera: Screenshots
