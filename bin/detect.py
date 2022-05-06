@@ -11,7 +11,9 @@ def run():
     if img_path == 'images/parking-lot-5.jpg':
         img_path = str(from_root(img_path))
 
-    result = objDetection(MDL_PATH, img_path)
+    save_dir = ""  # str(from_root('images')) # Save the images to this directory, Must be full path
+
+    result = objDetection(MDL_PATH, img_path, SAVED_IMG_PATH=save_dir)
     print("Number of vehicles: ", result["vehicles"])
     print("Number of pedestrians: ", result["pedestrians"])
     print("Number of objects: ", result["objects"])
