@@ -4,7 +4,7 @@
   <h1>KB4YG</h1>
   
   <p>
-    Project Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+    Oak Creek Valley is a very popular destination for hiking and recreation for the city of Corvallis. Accessible forests in the Oak Creek Valley include the McDonald Forest, Cardwell Hill, Fitton Green, Bald Hill Farm, and others. These natural areas are enjoyed by many for hiking, mountain biking, and more. Our project, Know Before You Go, is an Internet of Things platform with a mobile app to help park visitors determine how busy a recreation site is before they arrive. By providing park visitors with this insight, we alleviate traffic congestion at trailheads, saving park visitors time and preventing overuse of natural areas.
   </p>
   
   <!-- Badges -->
